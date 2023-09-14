@@ -1,4 +1,5 @@
 const express = require('express');
+const models = require('./models');
 const cors = require('cors');
 const app = express();
 const port = 8000;
@@ -28,6 +29,19 @@ app.get('/products', async (req, res) => {
   res.send(result);
 });
 
+// 핵심 코드 실행
 app.listen(port, () => {
-  console.log('on-air');
+  console.log('server on-air');
+  // sequelize <-> 디비 연결
+  // 디비 동기화
+  models.sequelize
+    .sync()
+    .then(() => {
+      console.log('DB 연결 성공');
+    })
+    .catch((e) => {
+      console.error(e);
+      console.log('DB연결 에러');
+      process.exit();
+    });
 });
